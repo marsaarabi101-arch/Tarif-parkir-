@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarif Parkir</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #d7edff, #a9d7f5);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 430px;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 70, 120, 0.15);
+            text-align: center;
+        }
+
+        .stiker {
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #176b9c;
+            margin-bottom: 8px;
+        }
+
+        .deskripsi {
+            color: #777;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin: 15px 0 8px;
+            color: #24536e;
+            font-weight: bold;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 13px;
+            border: 2px solid #c4e4f7;
+            border-radius: 12px;
+            outline: none;
+            font-size: 15px;
+            background: #f4faff;
+        }
+
+        select:focus, input:focus {
+            border-color: #399bd3;
+        }
+
+        .harga-info {
+            background: #eaf6ff;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 12px;
+            color: #176b9c;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 12px;
+            background: #268fca;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #176b9c;
+            transform: scale(1.02);
+        }
+
+        .reset {
+            background: #8bbbd8;
+            margin-top: 10px;
+        }
+
+        .hasil {
+            display: none;
+            margin-top: 22px;
+            padding: 18px;
+            border-radius: 15px;
+            background: #e9f7ff;
+            text-align: left;
+            border: 2px dashed #63b5e3;
+        }
+
+        .hasil h3 {
+            text-align: center;
+            color: #176b9c;
+            margin-bottom: 15px;
+        }
+
+        .hasil p {
+            margin: 10px 0;
+            color: #34566b;
+        }
+
+        .total {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #087bba;
+            margin-top: 15px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #8a9ba7;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="stiker">🅿️ 🚗 🏍️ 🚌</div>
+
+    <h1>Tarif Parkir</h1>
+    <p class="deskripsi">
+        Selamat Datang! Silakan Hitung Biaya Parkir Anda.
+    </p>
+
+    <label>🚘 Pilih Jenis Kendaraan</label>
+    <select id="kendaraan" onchange="tampilkanTarif()">
+        <option value="">-- Pilih Kendaraan --</option>
+        <option value="Motor">🏍️ Motor</option>
+        <option value="Mobil">🚗 Mobil</option>
+        <option value="Bus">🚌 Bus</option>
+    </select>
+
+    <div class="harga-info" id="infoTarif">
+        Tarif parkir akan muncul di sini.
+    </div>
+
+    <label>⏰ Durasi Parkir (Jam)</label>
+    <input type="number" id="durasi"
+        min="1" step="1" placeholder="Masukkan durasi parkir">
+
+    <button onclick="hitungParkir()">
+        HITUNG BIAYA PARKIR
+    </button>
+
+    <button class="reset" onclick="resetForm()">
+        RESET
+    </button>
+
+    <div class="hasil" id="hasil">
+        <h3>📋 Rincian Parkir</h3>
+
+        <p>🚘 Kendaraan: <b id="hasilKendaraan"></b></p>
+        <p>⏰ Durasi: <b id="hasilDurasi"></b></p>
+        <p>💰 Tarif per jam: <b id="hasilTarif"></b></p>
+        <p>➕ Biaya tambahan: <b id="hasilTambahan"></b></p>
+
+        <div class="total">
+            Total: <span id="hasilTotal"></span>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2026 | Sistem Informasi Tarif Parkir
+    </div>
+
+</div>
+
+<script>
+
+    function tampilkanTarif() {
+        let kendaraan = document.getElementById("kendaraan").value;
+        let info = document.getElementById("infoTarif");
+
+        let tarif = {
+            Motor: 2000,
+            Mobil: 3500,
+            Bus: 4000
+        };
+
+        if (kendaraan === "") {
+            info.innerHTML = "Tarif parkir akan muncul di sini.";
+        } else {
+            info.innerHTML =
+                "Tarif " + kendaraan + " adalah <b>Rp" +
+                tarif[kendaraan].toLocaleString("id-ID") +
+                " / jam</b>";
+        }
+
+        document.getElementById("hasil").style.display = "none";
+    }
+
+    function hitungParkir() {
+
+        let kendaraan = document.getElementById("kendaraan").value;
+        let durasi = parseInt(document.getElementById("durasi").value);
+
+        let tarif = {
+            Motor: 2000,
+            Mobil: 3500,
+            Bus: 4000
+        };
+
+        if (kendaraan === "") {
+            alert("Silakan pilih jenis kendaraan!");
+            return;
+        }
+
+        if (!Number.isInteger(durasi) || durasi < 1) {
+            alert("Masukkan durasi parkir minimal 1 jam!");
+            return;
+        }
+
+        let hargaPerJam = tarif[kendaraan];
+
+        // Menghitung biaya tambahan
+        let tambahan = durasi > 1 ? 1500 : 0;
+
+        // Menghitung total biaya
+        let total = (hargaPerJam * durasi) + tambahan;
+
+        document.getElementById("hasilKendaraan").innerHTML = kendaraan;
+
+        document.getElementById("hasilDurasi").innerHTML =
+            durasi + " jam";
+
+        document.getElementById("hasilTarif").innerHTML =
+            "Rp" + hargaPerJam.toLocaleString("id-ID");
+
+        document.getElementById("hasilTambahan").innerHTML =
+            "Rp" + tambahan.toLocaleString("id-ID");
+
+        document.getElementById("hasilTotal").innerHTML =
+            "Rp" + total.toLocaleString("id-ID");
+
+        document.getElementById("hasil").style.display = "block";
+    }
+
+    function resetForm() {
+        document.getElementById("kendaraan").value = "";
+        document.getElementById("durasi").value = "";
+
+        document.getElementById("infoTarif").innerHTML =
+            "Tarif parkir akan muncul di sini.";
+
+        document.getElementById("hasil").style.display = "none";
+    }
+
+</script>
+
+</body>
+</html>
